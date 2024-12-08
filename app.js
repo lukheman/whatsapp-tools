@@ -1,48 +1,15 @@
 const prompt = require('prompt-sync')()
 const fs = require('fs')
-
+//
 const { Client, LocalAuth } = require('whatsapp-web.js')
 const qrcode = require('qrcode-terminal')
-const { format, resolve } = require('path')
+
+const { clientLogin, generateClientsObject } = require('./utils.js')
+
+const config = require('./config.json')
+const { resolve } = require('path')
 
 const pesan = 'asssalamualaikum teman-teman, maaf mengganggu ini adalah pesan yang dikirim melalui bot sebagai tahap testing dan debugging'
-
-// fungsi ini digunakan untuk memilih client yang akan digunakan
-// jika Client tidak ada maka buat client baru
-// fungsi mengembaikan object Client
-function selectClient() {
-
-    const filenames = fs.readdirSync('./session')
-
-    return new Promise((resolve) => {
-
-        filenames.forEach((file, i) => {
-            console.log(`${i + 1}. ${file}`)
-        })
-        console.log('0 untuk sesi baru')
-
-        let session = prompt('Pilih sesi: ')
-        let nomor = ''
-
-        if (session === "0") {
-
-            while (!nomor.trim()) {
-                nomor = prompt('Masukan nomor anda: ')
-            }
-
-        } else {
-            // resolve(filenames[session - 1])
-            nomor = filenames[session - 1]
-        }
-
-        resolve(new Client({
-            authStrategy: new LocalAuth({ dataPath: 'session/' + nomor })
-        }))
-
-    })
-
-}
-
 
 function getTargetList() {
 
@@ -65,6 +32,7 @@ function pilihMenu() {
 
     console.log('silahkan pilih menu')
     console.log('1. Kirim pesan ke target list')
+    console.log('2. Kirim pesan ke target list')
 
     return new Promise((resolve) => {
         const pilihan = prompt('Pilih menu: ')
@@ -73,14 +41,58 @@ function pilihMenu() {
 
 }
 
-async function main() {
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-    const client = await selectClient()
+async function sendMessageTo(client, targetlist) {
 
-    client.on('qr', (qr) => {
-        qrcode.generate(qr, { small: true })
+    client.initialize()
+
+    return new Promise(resolve => {
+
+        client.on('ready', async () => {
+            console.log('membuat handler ready')
+
+            targetlist.forEach(async target => {
+                try {
+                    await client.sendMessage(target + '@c.us', pesan)
+                    console.log('Berhasil mengirim pesan ke: ', target)
+
+                } catch (err) {
+                    console.log('Gagal mengirim pesan ke: ', target, err)
+                }
+
+                await delay(2000)
+
+            })
+
+            resolve(true)
+
+        })
     })
 
+}
+
+async function main() {
+
+    if (config.antiBanned) {
+        const clients = generateClientsObject()
+
+        const targetlist = await getTargetList()
+
+        let currentClientIndex = 0
+        while (currentClientIndex < Object.keys(clients).length) {
+            const client = Object.values(clients)[currentClientIndex]
+            await sendMessageTo(client, targetlist)
+            currentClientIndex++
+        }
+
+    }
+
+    return
+
+    let client = await clientLogin()
     // pilih menu
     let menu = await pilihMenu()
 
@@ -90,14 +102,40 @@ async function main() {
         //  dapatkan daftar target
         const targetlist = await getTargetList()
 
+        let currentTargetIndex = 0
+
         client.on('ready', async () => {
 
-            targetlist.forEach(target => {
+            while (currentTargetIndex < targetlist.length) {
 
-                client.sendMessage(target + '@c.us', pesan)
-                console.log('berhasil mengirim pesan ke: ', target)
+                const target = targetlist[currentTargetIndex] + '@c.us'
 
-            })
+                try {
+
+                    client.sendMessage(target, pesan)
+                    console.log('Berhasil mengirim pesan ke: ', target)
+
+                    // TODO: Buat fitur ganti client
+                    if (config.antiBanned) {
+                        if (currentTargetIndex % config.clientLimitMsg == 0) {
+                        }
+                    }
+
+
+                } catch (err) {
+                    console.log('Gagal mengirim pesan ke: ', target, err)
+                }
+
+                currentTargetIndex++
+
+            }
+
+            //targetlist.forEach( => {
+            //
+            //    client.sendMessage(target + '@c.us', pesan)
+            //console.log('berhasil mengirim pesan ke: ', target)
+            //
+            //})
 
         })
 
@@ -105,7 +143,7 @@ async function main() {
         //
     }
 
-    await client.initialize()
+    client.initialize()
 
 
 }
