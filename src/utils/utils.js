@@ -58,22 +58,22 @@ async function clientLogin() {
 
 async function sendMessage(client, message, targets) {
   logger.debug("initialize client");
-  client.initialize();
 
   return new Promise((resolve) => {
     logger.debug("membuat handler untuk mengirim pesan");
-    client.on("ready", async () => {
-      targets.forEach(async (target) => {
+    client.on("ready", () => {
+      targets.forEach((target) => {
         try {
-          await client.sendMessage(target + "@c.us", message);
-          logger.info("Berhasil mengirim pesan ke: ", target);
+          client.sendMessage(target + "@c.us", message);
+          logger.info("Berhasil mengirim pesan ke: " + target);
         } catch (err) {
-          logger.error(err, "Gagal mengirim pesan ke: ", target);
+          logger.error(err, "Gagal mengirim pesan ke: " + target);
         }
       });
 
       resolve(true);
     });
+    client.initialize();
   });
 }
 
