@@ -38,9 +38,16 @@ async function menuAutoSenderAntiBanned() {
   let currentTargetIndex = 0;
   let currentClientIndex = 0;
 
+  // cetak info
+  logger.info("Jumlah akun   : " + Object.keys(clients).length);
+  logger.info("Jumlah target : " + targetlist.length);
+
   const message = prompt("Masukan pesan yang ingin anda kirim: ");
 
   while (currentClientIndex < Object.keys(clients).length) {
+    logger.info(
+      "Anda login dengan nomor " + Object.keys(clients)[currentClientIndex],
+    );
     const client = Object.values(clients)[currentClientIndex];
     const targets = targetlist.slice(
       currentTargetIndex,
