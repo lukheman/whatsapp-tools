@@ -1,10 +1,14 @@
 const prompt = require('prompt-sync')()
 const config = require('./config/config_user.json')
 
-const { clientLogin, generateClientsObject, sendMessage, getTargetList } = require('./utils/utils.js')
+const logger = require('./logger/logger.js')
 
-const message = 'asssalamualaikum teman-teman, maaf mengganggu ini adalah pesan yang dikirim melalui bot sebagai tahap testing dan debugging'
-
+const {
+    clientLogin,
+    generateClientsObject,
+    sendMessage,
+    getTargetList
+} = require('./utils/utils.js')
 
 function pilihMenu() {
 
@@ -22,49 +26,29 @@ function pilihMenu() {
 async function menuAutoSender() {
 
     let client = await clientLogin()
-    const targetlist = await getTargetList()
+    const targetlist = getTargetList()
 
-    let currentTargetIndex = 0
+    let message = prompt('Masukan pesan anda: ')
 
-    client.on('ready', async () => {
-
-        while (currentTargetIndex < targetlist.length) {
-
-            const target = targetlist[currentTargetIndex] + '@c.us'
-
-            try {
-
-                client.sendMessage(target, message)
-                console.log('Berhasil mengirim pesan ke: ', target)
-
-
-            } catch (err) {
-                console.log('Gagal mengirim pesan ke: ', target, err)
-            }
-
-            currentTargetIndex++
-
-        }
-
-    })
-
-    client.initialize()
+    logger.info('Memulai mengirim pesan ke targetlist')
+    await sendMessage(client, message, targetlist)
 
 }
 
 async function menuAutoSenderAntiBanned() {
 
     const clients = generateClientsObject()
-
-    const targetlist = await getTargetList()
+    const targetlist = getTargetList()
 
     let currentTargetIndex = 0
     let currentClientIndex = 0
 
+    const message = prompt('Masukan pesan yang ingin anda kirim: ')
+
     while (currentClientIndex < Object.keys(clients).length) {
         const client = Object.values(clients)[currentClientIndex]
         const targets = targetlist.slice(currentTargetIndex, currentTargetIndex + config.clientLimitMsg)
-        await sendMessage(client, targets)
+        await sendMessage(client, message, targets)
 
         currentTargetIndex += config.clientLimitMsg
         currentClientIndex++
@@ -73,6 +57,19 @@ async function menuAutoSenderAntiBanned() {
 }
 
 async function main() {
+
+    const menu = await pilihMenu()
+
+    if (menu == '1') {
+        await menuAutoSender()
+    } else if (menu == '2') {
+        await menuAutoSenderAntiBanned()
+    } else if (menu == 'e') {
+    } else {
+        console.log('pilihan tidak tersedia')
+    }
+
+
 }
 
 
