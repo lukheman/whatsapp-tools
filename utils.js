@@ -58,14 +58,39 @@ async function clientLogin() {
 
         resolve(client)
 
-        // client.on('ready', () => {
-        //     console.log('Anda login dengan nomor: ', nomor)
-        //     console.log('Client siap digunakan')
-        //     resolve(client)
-        // })
-
     }
     )
 }
 
-module.exports = { clientLogin, generateClientsObject }
+async function sendMessage(client, targetlist) {
+
+    client.initialize()
+
+    return new Promise(resolve => {
+
+        client.on('ready', async () => {
+            console.log('membuat handler ready')
+
+            targetlist.forEach(async target => {
+
+                try {
+                    await client.sendMessage(target + '@c.us', pesan)
+                    console.log('Berhasil mengirim pesan ke: ', target)
+                } catch (err) {
+                    console.log('Gagal mengirim pesan ke: ', target, err)
+                }
+
+            })
+
+            resolve(true)
+
+        })
+    })
+
+}
+
+module.exports = {
+    clientLogin,
+    generateClientsObject,
+    sendMessage
+}
