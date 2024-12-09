@@ -89,8 +89,26 @@ async function sendMessage(client, targetlist) {
 
 }
 
+function getTargetList() {
+
+    return new Promise(resolve => {
+        fs.readFile('./targetlist.txt', 'utf8', (err, data) => {
+
+            if (err) {
+                console.error(err)
+                return
+            }
+            resolve(data.split('\n').filter((nomor) => nomor != ''))
+
+        })
+
+    })
+
+}
+
 module.exports = {
     clientLogin,
     generateClientsObject,
-    sendMessage
+    sendMessage,
+    getTargetList
 }
