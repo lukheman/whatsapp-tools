@@ -3,8 +3,6 @@ const fs = require('fs')
 const prompt = require('prompt-sync')()
 const qrcode = require('qrcode-terminal')
 const logger = require('./../logger/logger.js')
-const { log } = require('console')
-const { createRequire } = require('module')
 
 function generateClientsObject() {
 
@@ -67,7 +65,7 @@ async function clientLogin() {
     )
 }
 
-async function sendMessageMulti(client, pesan, targets) {
+async function sendMessage(client, message, targets) {
 
     logger.debug('initialize client')
     client.initialize()
@@ -80,7 +78,7 @@ async function sendMessageMulti(client, pesan, targets) {
             targets.forEach(async target => {
 
                 try {
-                    await client.sendMessage(target + '@c.us', pesan)
+                    await client.sendMessage(target + '@c.us', message)
                     logger.info('Berhasil mengirim pesan ke: ', target)
                 } catch (err) {
                     logger.error(err, 'Gagal mengirim pesan ke: ', target)
@@ -95,45 +93,34 @@ async function sendMessageMulti(client, pesan, targets) {
 
 }
 
-async function sendMessage(client, message, target) {
-
-    client.initialize()
-
-    logger.debug('Membuat handler untuk mengirim pesan')
-    client.on('ready', async () => {
-        try {
-            await client.sendMessage(target + '@c.us', message)
-            logger.info('Berhasil mengirim pesan ke: ', target)
-
-        } catch {
-            logger.error('Gagal mengirim pesan ke: ', target, err)
-        }
-    })
-
-}
 
 function getTargetList() {
 
-    return new Promise(resolve => {
-        logger.info('Memproses target list dari file')
-        fs.readFile('./targetlist.txt', 'utf8', (err, data) => {
+    logger.info('Mendapatkan daftar target dari targetlist.txt')
+    const buffer = fs.readFileSync('./targetlist.txt', 'utf8')
 
-            if (err) {
-                console.error(err)
-                return
-            }
-            resolve(data.split('\n').filter((nomor) => nomor != ''))
+    const data = buffer.split('\n').filter((nomor) => nomor != '')
 
-        })
+    return data
 
-    })
+    //return new Promise(resolve => {
+    //    fs.readFile('./targetlist.txt', 'utf8', (err, data) => {
+    //
+    //        if (err) {
+    //            console.error(err)
+    //            return
+    //        }
+    //        resolve(data.split('\n').filter((nomor) => nomor != ''))
+    //
+    //    })
+    //
+    //})
 
 }
 
 module.exports = {
     clientLogin,
     generateClientsObject,
-    sendMessageMulti,
     sendMessage,
     getTargetList
 }
