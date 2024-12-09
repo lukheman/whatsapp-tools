@@ -1,76 +1,71 @@
-const prompt = require('prompt-sync')()
-const config = require('./config/config_user.json')
+const prompt = require("prompt-sync")();
+const config = require("./config/config_user.json");
 
-const logger = require('./logger/logger.js')
+const logger = require("./logger/logger.js");
 
 const {
-    clientLogin,
-    generateClientsObject,
-    sendMessage,
-    getTargetList
-} = require('./utils/utils.js')
+  clientLogin,
+  generateClientsObject,
+  sendMessage,
+  getTargetList,
+} = require("./utils/utils.js");
 
 function pilihMenu() {
+  console.log("silahkan pilih menu");
+  console.log("[1] Auto sender");
+  console.log("[2] Auto sender (save mode)");
 
-    console.log('silahkan pilih menu')
-    console.log('[1] Auto sender')
-    console.log('[2] Auto sender (save mode)')
-
-    return new Promise((resolve) => {
-        let pilihan = prompt('[ ] Pilih menu: ')
-        resolve(pilihan)
-    })
-
+  return new Promise((resolve) => {
+    let pilihan = prompt("[ ] Pilih menu: ");
+    resolve(pilihan);
+  });
 }
 
 async function menuAutoSender() {
+  let client = await clientLogin();
+  const targetlist = getTargetList();
 
-    let client = await clientLogin()
-    const targetlist = getTargetList()
+  let message = prompt("Masukan pesan yang ingin anda kirim: ");
 
-    let message = prompt('Masukan pesan anda: ')
-
-    logger.info('Memulai mengirim pesan ke targetlist')
-    await sendMessage(client, message, targetlist)
-
+  logger.info("Memulai mengirim pesan ke targetlist");
+  await sendMessage(client, message, targetlist);
 }
 
 async function menuAutoSenderAntiBanned() {
+  const clients = generateClientsObject();
+  const targetlist = getTargetList();
 
-    const clients = generateClientsObject()
-    const targetlist = getTargetList()
+  let currentTargetIndex = 0;
+  let currentClientIndex = 0;
 
-    let currentTargetIndex = 0
-    let currentClientIndex = 0
+  const message = prompt("Masukan pesan yang ingin anda kirim: ");
 
-    const message = prompt('Masukan pesan yang ingin anda kirim: ')
+  while (currentClientIndex < Object.keys(clients).length) {
+    const client = Object.values(clients)[currentClientIndex];
+    const targets = targetlist.slice(
+      currentTargetIndex,
+      currentTargetIndex + config.clientLimitMsg,
+    );
 
-    while (currentClientIndex < Object.keys(clients).length) {
-        const client = Object.values(clients)[currentClientIndex]
-        const targets = targetlist.slice(currentTargetIndex, currentTargetIndex + config.clientLimitMsg)
-        await sendMessage(client, message, targets)
+    logger.info("Memulai mengirim pesan ke targetlist");
+    await sendMessage(client, message, targets);
 
-        currentTargetIndex += config.clientLimitMsg
-        currentClientIndex++
-    }
-
+    currentTargetIndex += config.clientLimitMsg;
+    currentClientIndex++;
+  }
 }
 
 async function main() {
+  const menu = await pilihMenu();
 
-    const menu = await pilihMenu()
-
-    if (menu == '1') {
-        await menuAutoSender()
-    } else if (menu == '2') {
-        await menuAutoSenderAntiBanned()
-    } else if (menu == 'e') {
-    } else {
-        console.log('pilihan tidak tersedia')
-    }
-
-
+  if (menu == "1") {
+    await menuAutoSender();
+  } else if (menu == "2") {
+    await menuAutoSenderAntiBanned();
+  } else if (menu == "e") {
+  } else {
+    console.log("pilihan tidak tersedia");
+  }
 }
 
-
-main()
+main();
