@@ -45,34 +45,6 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function sendMessageTo(client, targetlist) {
-
-    client.initialize()
-
-    return new Promise(resolve => {
-
-        client.on('ready', async () => {
-            console.log('membuat handler ready')
-
-            targetlist.forEach(async target => {
-                try {
-                    await client.sendMessage(target + '@c.us', pesan)
-                    console.log('Berhasil mengirim pesan ke: ', target)
-
-                } catch (err) {
-                    console.log('Gagal mengirim pesan ke: ', target, err)
-                }
-
-                await delay(2000)
-
-            })
-
-            resolve(true)
-
-        })
-    })
-
-}
 
 async function main() {
 
@@ -81,10 +53,15 @@ async function main() {
 
         const targetlist = await getTargetList()
 
+        let currentTargetIndex = 0
         let currentClientIndex = 0
+
         while (currentClientIndex < Object.keys(clients).length) {
             const client = Object.values(clients)[currentClientIndex]
-            await sendMessageTo(client, targetlist)
+            const targets = targetlist.slice(currentTargetIndex, currentTargetIndex + config.clientLimitMsg)
+            await sendMessageTo(client, targets)
+
+            currentTargetIndex += config.clientLimitMsg
             currentClientIndex++
         }
 
