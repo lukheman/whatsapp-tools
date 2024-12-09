@@ -84,19 +84,6 @@ function getTargetList() {
   const data = buffer.split("\n").filter((nomor) => nomor != "");
 
   return data;
-
-  //return new Promise(resolve => {
-  //    fs.readFile('./targetlist.txt', 'utf8', (err, data) => {
-  //
-  //        if (err) {
-  //            console.error(err)
-  //            return
-  //        }
-  //        resolve(data.split('\n').filter((nomor) => nomor != ''))
-  //
-  //    })
-  //
-  //})
 }
 
 module.exports = {
