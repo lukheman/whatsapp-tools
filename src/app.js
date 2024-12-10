@@ -14,6 +14,7 @@ function pilihMenu() {
   console.log("silahkan pilih menu");
   console.log("[1] Auto sender");
   console.log("[2] Auto sender (save mode)");
+  console.log("[3] Tambah Nomor");
 
   return new Promise((resolve) => {
     let pilihan = prompt("[ ] Pilih menu: ");
@@ -57,9 +58,17 @@ async function menuAutoSenderAntiBanned() {
     logger.info("Memulai mengirim pesan ke targetlist");
     await sendMessage(client, message, targets);
 
-    currentTargetIndex += config.clientLimitMsg;
+    // currentTargetIndex += config.clientLimitMsg;
     currentClientIndex++;
   }
+}
+
+// fungsi ini digunakan untuk menambah dan menyimpan session
+async function menuAddPhoneNumber() {
+  const phone_number = prompt("[ ] Masukan nomor telepon: ");
+  logger.info("Mencoba login ke nomor " + phone_number);
+  await clientLogin(phone_number);
+  logger.info("Berhasil login ke nomor " + phone_number);
 }
 
 async function main() {
@@ -69,6 +78,8 @@ async function main() {
     await menuAutoSender();
   } else if (menu == "2") {
     await menuAutoSenderAntiBanned();
+  } else if (menu == "3") {
+    await menuAddPhoneNumber();
   } else if (menu == "e") {
   } else {
     console.log("pilihan tidak tersedia");
