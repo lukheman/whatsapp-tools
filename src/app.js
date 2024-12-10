@@ -58,17 +58,30 @@ async function menuAutoSenderAntiBanned() {
     logger.info("Memulai mengirim pesan ke targetlist");
     await sendMessage(client, message, targets);
 
-    // currentTargetIndex += config.clientLimitMsg;
     currentClientIndex++;
   }
 }
 
 // fungsi ini digunakan untuk menambah dan menyimpan session
 async function menuAddPhoneNumber() {
-  const phone_number = prompt("[ ] Masukan nomor telepon: ");
-  logger.info("Mencoba login ke nomor " + phone_number);
-  await clientLogin(phone_number);
-  logger.info("Berhasil login ke nomor " + phone_number);
+  while (true) {
+    const phone_number = prompt("[ ] Masukan nomor telepon: ");
+    logger.info("Mencoba login ke nomor " + phone_number);
+    await clientLogin(phone_number);
+    logger.info("Berhasil login ke nomor " + phone_number);
+
+    if (logger.flush) {
+      await new Promise((resolve) => logger.flush(resolve));
+    }
+
+    const repeat = prompt("[?] Lagi (y/n): ");
+
+    if (repeat == "y") {
+      continue;
+    } else {
+      process.exit(0);
+    }
+  }
 }
 
 async function main() {
