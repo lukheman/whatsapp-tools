@@ -47,7 +47,7 @@ async function clientLogin(phone_number) {
       });
 
       client.on("qr", async (qr) => {
-        logger.info("Generate qr code");
+        logger.info("Generate qr code untuk nomor " + phone_number);
         qrcode.generate(qr, { small: true });
       });
 
