@@ -10,6 +10,8 @@ const {
   getTargetList,
 } = require("./utils/utils.js");
 
+const { onMessageCreate } = require("./utils/handlers.js");
+
 function pilihMenu() {
   console.log("silahkan pilih menu");
   console.log("[1] Auto sender");
@@ -30,6 +32,10 @@ async function menuAutoSender() {
 
   logger.info("Memulai mengirim pesan ke targetlist");
   await sendMessage(client, message, targetlist);
+
+  onMessageCreate(client);
+
+  // process.exit(0);
 }
 
 async function menuAutoSenderAntiBanned() {
@@ -60,6 +66,7 @@ async function menuAutoSenderAntiBanned() {
 
     currentClientIndex++;
   }
+  process.exit(0);
 }
 
 // fungsi ini digunakan untuk menambah dan menyimpan session
