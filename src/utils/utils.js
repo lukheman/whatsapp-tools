@@ -82,6 +82,29 @@ async function sendMessage(client, message, targets) {
   });
 }
 
+async function getChatLog(client, phone_number, limit) {
+  client.on("ready", async () => {
+    logger.info("client siap...");
+
+    const chatId = phone_number + "@c.us";
+
+    try {
+      const chat = await client.getChatById(chatId);
+
+      const messages = await chat.fetchMessages({ limit });
+
+      logger.info("10 chat pertama dari " + phone_number);
+      messages.forEach((msg, index) => {
+        logger.info(`${index + 1} : ${msg.body}`);
+      });
+    } catch (err) {
+      logger.error(err, "Gagal mengambil pesan");
+    }
+  });
+
+  client.initialize();
+}
+
 // fungsi untuk mendapatkan list berdasarkn isi file targetlist.txt
 function getTargetList() {
   logger.info("Mendapatkan daftar target dari targetlist.txt");
@@ -96,5 +119,6 @@ module.exports = {
   clientLogin,
   generateClientsObject,
   sendMessage,
+  getChatLog,
   getTargetList,
 };
