@@ -7,6 +7,7 @@ const {
   clientLogin,
   generateClientsObject,
   sendMessage,
+  getChatLog,
   getTargetList,
 } = require("./utils/utils.js");
 
@@ -91,6 +92,13 @@ async function menuAddPhoneNumber() {
   }
 }
 
+async function menuGetChatLog() {
+  const client = await clientLogin();
+  const phone_number = prompt("[*] Nomor Hp: ");
+
+  await getChatLog(client, phone_number, 10);
+}
+
 async function main() {
   const menu = await pilihMenu();
 
@@ -100,6 +108,8 @@ async function main() {
     await menuAutoSenderAntiBanned();
   } else if (menu == "3") {
     await menuAddPhoneNumber();
+  } else if (menu == "4") {
+    await menuGetChatLog();
   } else if (menu == "e") {
   } else {
     console.log("pilihan tidak tersedia");
