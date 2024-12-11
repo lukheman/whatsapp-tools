@@ -78,10 +78,6 @@ async function menuAddPhoneNumber() {
     await clientLogin(phone_number);
     logger.info("Berhasil login ke nomor " + phone_number);
 
-    if (logger.flush) {
-      await new Promise((resolve) => logger.flush(resolve));
-    }
-
     const repeat = prompt("[?] Lagi (y/n): ");
 
     if (repeat == "y") {
