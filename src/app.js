@@ -18,6 +18,7 @@ function pilihMenu() {
   console.log("[1] Auto sender");
   console.log("[2] Auto sender (save mode)");
   console.log("[3] Tambah Nomor");
+  console.log("[4] Dapatkan Log Chat");
 
   return new Promise((resolve) => {
     let pilihan = prompt("[ ] Pilih menu: ");
@@ -91,8 +92,10 @@ async function menuAddPhoneNumber() {
 async function menuGetChatLog() {
   const client = await clientLogin();
   const phone_number = prompt("[*] Nomor Hp: ");
+  const limit = prompt("[*] Limit: ");
 
-  await getChatLog(client, phone_number, 10);
+  logger.info("get chat log");
+  await getChatLog(client, phone_number, Number(limit));
 }
 
 async function main() {
