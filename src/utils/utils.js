@@ -82,6 +82,7 @@ async function sendMessage(client, message, targets) {
   });
 }
 
+// fungsi untuk mendapatkan list berdasarkn isi file targetlist.txt
 function getTargetList() {
   logger.info("Mendapatkan daftar target dari targetlist.txt");
   const buffer = fs.readFileSync("./targetlist.txt", "utf8");
