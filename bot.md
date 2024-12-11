@@ -15,7 +15,7 @@ client menginginkan sebuah bot whatsapp untuk bisninsya dimana bot tersebut memi
     kemudian secara otomatis beralih ke nomor lain
 	dan megirim ke 2 nomor lagi dan seterusnya
 - [ ] bot memiliki auto responder berdasarkan similarity dan pola
-- [ ] bot dapat menampilkan pesan masuk
+- [x] bot dapat menampilkan pesan masuk
 
 # Menu
 1. [ ] auto sender
@@ -23,10 +23,10 @@ client menginginkan sebuah bot whatsapp untuk bisninsya dimana bot tersebut memi
 	- ketika selesai user di beri pilihan
 	 1. lakukan lagi
 	 2. ganti nomor
-2. [ ] save mode
+2. [x] save mode
 	mengunakan mode save ( antisipasi banneed )
 	user di minta menginput jumlah range
-3. [ ] baca pesan
+3. [x] baca pesan
 	user di minta jumlah pesan terbaru yang ingin di tampilkan
 
 note from bagus
