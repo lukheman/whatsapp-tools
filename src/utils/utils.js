@@ -83,6 +83,7 @@ async function sendMessage(client, message, targets) {
 }
 
 async function getChatLog(client, phone_number, limit) {
+  logger.debug("Membuat client handler");
   client.on("ready", async () => {
     logger.info("client siap...");
 
@@ -102,6 +103,7 @@ async function getChatLog(client, phone_number, limit) {
     }
   });
 
+  logger.debug("initialize client");
   client.initialize();
 }
 
