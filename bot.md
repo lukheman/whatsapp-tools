@@ -18,7 +18,7 @@ client menginginkan sebuah bot whatsapp untuk bisninsya dimana bot tersebut memi
 - [x] bot dapat menampilkan pesan masuk
 
 # Menu
-1. [ ] auto sender
+1. [x] auto sender
 	- user di minta memasukan list nomor
 	- ketika selesai user di beri pilihan
 	 1. lakukan lagi
@@ -32,3 +32,8 @@ client menginginkan sebuah bot whatsapp untuk bisninsya dimana bot tersebut memi
 note from bagus
 - offuscute scriptnya
 - kalau bisa pasangkan validasi berdasarkan machine id biar tidak bisa di gunakan di perangkat lain
+
+alur program
+
+- login/pilih sesi
+- pilih menu
