@@ -117,10 +117,34 @@ function getTargetList() {
   return data;
 }
 
+function getTokenFromUser() {
+  return new Promise((resolve) => {
+    const token = prompt("[!] Masukan token: ");
+    resolve(token);
+  });
+}
+
+// fungsi ini untuk mengecek file token
+// jika ada maka gunakan token yang ada di file
+// jika tidak maka user akan diminta memasukan token
+function cekToken() {
+  try {
+    const token = fs.readFileSync(".token", "utf8");
+    return token;
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      return getTokenFromUser();
+    }
+  }
+}
+
+cekToken();
+
 module.exports = {
   clientLogin,
   generateClientsObject,
   sendMessage,
   getChatLog,
   getTargetList,
+  cekToken,
 };
