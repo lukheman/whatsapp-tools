@@ -9,16 +9,15 @@ const {
   sendMessage,
   getChatLog,
   getTargetList,
+  cekToken,
 } = require("./utils/utils.js");
 
 const { onMessageCreate } = require("./utils/handlers.js");
 
+const components = require("./ui/components.js");
+
 function pilihMenu() {
-  console.log("silahkan pilih menu");
-  console.log("[1] Auto sender");
-  console.log("[2] Auto sender (save mode)");
-  console.log("[3] Tambah Nomor");
-  console.log("[4] Dapatkan Log Chat");
+  components.menu();
 
   return new Promise((resolve) => {
     let pilihan = prompt("[ ] Pilih menu: ");
@@ -115,4 +114,6 @@ async function main() {
   }
 }
 
-main();
+// main();
+
+cekToken();
