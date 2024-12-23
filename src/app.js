@@ -3,6 +3,8 @@ const config = require("./config/config_user.json");
 
 const logger = require("./logger/logger.js");
 
+const { machineIdSync } = require("node-machine-id");
+
 const {
   clientLogin,
   generateClientsObject,
@@ -15,6 +17,8 @@ const {
 const { onMessageCreate } = require("./utils/handlers.js");
 
 const components = require("./ui/components.js");
+
+const BASEURL = "http://localhost:3000";
 
 function pilihMenu() {
   components.menu();
@@ -97,23 +101,70 @@ async function menuGetChatLog() {
   await getChatLog(client, phone_number, Number(limit));
 }
 
-async function main() {
-  const menu = await pilihMenu();
+async function register() {
+  const name = prompt("Nama: ");
+  const email = prompt("Email: ");
+  const machineId = machineIdSync({ origin: true });
 
-  if (menu == "1") {
-    await menuAutoSender();
-  } else if (menu == "2") {
-    await menuAutoSenderAntiBanned();
-  } else if (menu == "3") {
-    await menuAddPhoneNumber();
-  } else if (menu == "4") {
-    await menuGetChatLog();
-  } else if (menu == "e") {
-  } else {
-    console.log("pilihan tidak tersedia");
-  }
+  await fetch(BASEURL + "/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name, email, machineId }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+    });
 }
 
-// main();
+async function main() {
+  // cek apakah machineId telah terdaftar di server
 
-cekToken();
+  const machineId = machineIdSync({ origin: true });
+  // const machineId = "machine1235";
+
+  fetch(BASEURL + "/userinformation", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", // Pastikan header JSON ditambahkan
+    },
+    body: JSON.stringify({ machineId }),
+  })
+    .then((response) => response.json())
+    .then(async (data) => {
+      if (data.status === "error") {
+        if (data.message == "machineId not found") {
+          console.log("silahkan melakukan registrasi");
+          prompt();
+          await register();
+          // process.exit(0);
+        }
+        console.log("terjadi kesalahan");
+        process.exit(1);
+      } else {
+        const user = data.data.user;
+        console.log(user);
+      }
+    });
+
+  // const menu = await pilihMenu();
+  //
+  // if (menu == "1") {
+  //   await menuAutoSender();
+  // } else if (menu == "2") {
+  //   await menuAutoSenderAntiBanned();
+  // } else if (menu == "3") {
+  //   await menuAddPhoneNumber();
+  // } else if (menu == "4") {
+  //   await menuGetChatLog();
+  // } else if (menu == "e") {
+  // } else {
+  //   console.log("pilihan tidak tersedia");
+  // }
+}
+
+main();
+
+// cekToken();
