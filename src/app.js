@@ -91,6 +91,7 @@ async function menuAddPhoneNumber() {
     if (repeat == "y") {
       continue;
     } else {
+      await menu();
       process.exit(0);
     }
   }
