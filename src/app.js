@@ -104,13 +104,11 @@ async function menuGetChatLog() {
 async function registerAndValidation() {
   components.loginBanner();
 
-async function main() {
   // cek apakah machineId telah terdaftar di server
-
   const machineId = machineIdSync({ origin: true });
-  // const machineId = "machine1235";
+  // const machineId = "dkdk";
 
-  fetch(BASEURL + "/userinformation", {
+  fetch(BASEURL + "/ismachineidregistered", {
     method: "POST",
     headers: {
       "Content-Type": "application/json", // Pastikan header JSON ditambahkan
@@ -118,38 +116,47 @@ async function main() {
     body: JSON.stringify({ machineId }),
   })
     .then((response) => response.json())
-    .then(async (data) => {
-      if (data.status === "error") {
-        if (data.message == "machineId not found") {
+    .then(async (res) => {
+      if (res.status === "success") {
+        // cek apakah ada file .token
+        let token = undefined;
+
+        console.log("[!] Anda telah terdaftar");
+        if (fs.existsSync(".token")) {
+          token = fs.readFileSync(".token", "utf8");
+        } else {
+          token = prompt("[?] Masukan token anda: ");
+        }
+
+        await sleep(3000);
+
+        // validasi token
+        // dapatkan token dari user
+        const result = await tokenValidation(machineId, token);
+
+        if (result.status === "success") {
+          // save token
+          fs.writeFileSync(".token", token, "utf8");
+          await menu();
+        } else {
+          if (fs.existsSync(".token")) {
+            fs.unlinkSync(".token");
+          }
+          logger.error(result.message);
+        }
+      } else if (res.status === "error") {
+        if (res.message == "machineId is not registered") {
           console.log("silahkan melakukan registrasi");
           prompt();
-          await register();
+          await userRegistration();
           // process.exit(0);
+        } else {
+          console.log("terjadi kesalahan");
+          process.exit(1);
         }
-        console.log("terjadi kesalahan");
-        process.exit(1);
-      } else {
-        const user = data.data.user;
-        console.log(user);
       }
     });
-
-  // const menu = await pilihMenu();
-  //
-  // if (menu == "1") {
-  //   await menuAutoSender();
-  // } else if (menu == "2") {
-  //   await menuAutoSenderAntiBanned();
-  // } else if (menu == "3") {
-  //   await menuAddPhoneNumber();
-  // } else if (menu == "4") {
-  //   await menuGetChatLog();
-  // } else if (menu == "e") {
-  // } else {
-  //   console.log("pilihan tidak tersedia");
-  // }
 }
 
-main();
 
 // cekToken();
