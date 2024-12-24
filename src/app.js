@@ -185,7 +185,7 @@ async function menu() {
     await menuGetChatLog();
   } else if (menu == "e") {
   } else {
-    console.log("pilihan tidak tersedia");
+    console.log("[!] pilihan tidak tersedia");
   }
 }
 
