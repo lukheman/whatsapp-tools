@@ -23,4 +23,4 @@ function menu() {
   console.log("[4] Dapatkan Log Chat");
 }
 
-module.exports = { menu, loginBanner };
+module.exports = { menu, loginBanner, banner };
