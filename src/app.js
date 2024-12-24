@@ -12,9 +12,13 @@ const {
   getChatLog,
   getTargetList,
   cekToken,
+  sleep,
 } = require("./utils/utils.js");
 
+const fs = require("fs");
+
 const { onMessageCreate } = require("./utils/handlers.js");
+const { tokenValidation, userRegistration } = require("./utils/validation.js");
 
 const components = require("./ui/components.js");
 
@@ -158,5 +162,21 @@ async function registerAndValidation() {
     });
 }
 
+async function menu() {
+  const menu = await pilihMenu();
 
-// cekToken();
+  if (menu == "1") {
+    await menuAutoSender();
+  } else if (menu == "2") {
+    await menuAutoSenderAntiBanned();
+  } else if (menu == "3") {
+    await menuAddPhoneNumber();
+  } else if (menu == "4") {
+    await menuGetChatLog();
+  } else if (menu == "e") {
+  } else {
+    console.log("pilihan tidak tersedia");
+  }
+}
+
+registerAndValidation();
