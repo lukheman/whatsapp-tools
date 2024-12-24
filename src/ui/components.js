@@ -7,6 +7,12 @@ function banner() {
  `);
 }
 
+function loginBanner() {
+  console.clear();
+  banner();
+  console.log("       LOGIN MENGGUNAKAN COOKIE");
+}
+
 function menu() {
   console.clear();
   banner();
@@ -17,4 +23,4 @@ function menu() {
   console.log("[4] Dapatkan Log Chat");
 }
 
-module.exports = { menu };
+module.exports = { menu, loginBanner };
