@@ -101,23 +101,8 @@ async function menuGetChatLog() {
   await getChatLog(client, phone_number, Number(limit));
 }
 
-async function register() {
-  const name = prompt("Nama: ");
-  const email = prompt("Email: ");
-  const machineId = machineIdSync({ origin: true });
-
-  await fetch(BASEURL + "/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, email, machineId }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-    });
-}
+async function registerAndValidation() {
+  components.loginBanner();
 
 async function main() {
   // cek apakah machineId telah terdaftar di server
