@@ -109,6 +109,7 @@ async function registerAndValidation() {
   components.loginBanner();
 
   // cek apakah machineId telah terdaftar di server
+  logger.info("Synchronization with server...");
   const machineId = machineIdSync({ origin: true });
   // const machineId = "dkdk";
 
@@ -121,21 +122,27 @@ async function registerAndValidation() {
   })
     .then((response) => response.json())
     .then(async (res) => {
+      logger.info("Successfully getting data from server...");
+      await sleep(1000);
       if (res.status === "success") {
         // cek apakah ada file .token
         let token = undefined;
 
-        console.log("[!] Anda telah terdaftar");
+        // console.log("[!] Anda telah terdaftar");
+        logger.info("You have registered");
+        await sleep(1000);
+        console.log();
         if (fs.existsSync(".token")) {
           token = fs.readFileSync(".token", "utf8");
         } else {
           token = prompt("[?] Masukan token anda: ");
         }
 
-        await sleep(3000);
-
         // validasi token
         // dapatkan token dari user
+        logger.info("Validate token");
+        await sleep(3000);
+
         const result = await tokenValidation(machineId, token);
 
         if (result.status === "success") {
@@ -150,12 +157,15 @@ async function registerAndValidation() {
         }
       } else if (res.status === "error") {
         if (res.message == "machineId is not registered") {
-          console.log("silahkan melakukan registrasi");
-          prompt();
+          console.log("[!] Anda belum melakukan registrasi");
+          prompt("[*] [enter] untuk melakukan registrasi");
+          console.clear();
+          components.banner();
+          console.log("     REGISTRATION");
           await userRegistration();
           // process.exit(0);
         } else {
-          console.log("terjadi kesalahan");
+          logger.error("terjadi kesalahan");
           process.exit(1);
         }
       }
