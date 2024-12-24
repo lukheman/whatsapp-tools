@@ -1,0 +1,3 @@
+- [ ] jangan kembalikan machineid di api
+- [ ] validasi pattern email
+- [ ] cek apakah sesi masih aktif
