@@ -1,4 +1,7 @@
 const { machineIdSync } = require("node-machine-id");
+const logger = require("../logger/logger");
+const { sleep } = require("./utils");
+const prompt = require("prompt-sync")();
 
 const BASEURL = "http://localhost:3000";
 
@@ -19,8 +22,8 @@ const tokenValidation = async (machineId, token) => {
 };
 
 const userRegistration = async () => {
-  const name = prompt("Nama: ");
-  const email = prompt("Email: ");
+  const name = prompt("[?] Nama: ");
+  const email = prompt("[?] Email: ");
   const machineId = machineIdSync({ origin: true });
 
   await fetch(BASEURL + "/register", {
@@ -31,13 +34,17 @@ const userRegistration = async () => {
     body: JSON.stringify({ name, email, machineId }),
   })
     .then((response) => response.json())
-    .then((data) => {
+    .then(async (data) => {
       if (data.status === "error") {
-        console.log(data.message);
+        logger.error(data.message);
         return false;
       }
 
-      console.log(data);
+      logger.info("User successfully registered");
+      await sleep(1000);
+      console.log("[!] Token anda: \n");
+      console.log(data.data.token);
+      console.log("\n[!] Gunakan token tersebut untuk login di lain waktu");
       return true;
     });
 };
