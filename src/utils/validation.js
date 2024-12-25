@@ -2,8 +2,7 @@ const { machineIdSync } = require("node-machine-id");
 const logger = require("../logger/logger");
 const { sleep } = require("./utils");
 const prompt = require("prompt-sync")();
-
-const BASEURL = "http://localhost:3000";
+const { BASEURL } = require("./config.js");
 
 const tokenValidation = async (machineId, token) => {
   return new Promise((resolve) => {
