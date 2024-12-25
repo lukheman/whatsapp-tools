@@ -11,7 +11,6 @@ const {
   sendMessage,
   getChatLog,
   getTargetList,
-  cekToken,
   sleep,
 } = require("./utils/utils.js");
 
@@ -22,7 +21,7 @@ const { tokenValidation, userRegistration } = require("./utils/validation.js");
 
 const components = require("./ui/components.js");
 
-const BASEURL = "http://localhost:3000";
+const { BASEURL } = require("./utils/config.js");
 
 function pilihMenu() {
   components.menu();
