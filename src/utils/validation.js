@@ -3,6 +3,7 @@ const logger = require("../logger/logger");
 const { sleep } = require("./utils");
 const prompt = require("prompt-sync")();
 const { BASEURL } = require("./config.js");
+const validator = require("email-validator");
 
 const tokenValidation = async (machineId, token) => {
   return new Promise((resolve) => {
@@ -23,6 +24,12 @@ const tokenValidation = async (machineId, token) => {
 const userRegistration = async () => {
   const name = prompt("[?] Nama: ");
   const email = prompt("[?] Email: ");
+
+  if (!validator.validate_async(email)) {
+    logger.error("invalid email");
+    return false;
+  }
+
   const machineId = machineIdSync({ origin: true });
 
   await fetch(BASEURL + "/register", {
