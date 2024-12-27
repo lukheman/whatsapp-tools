@@ -6,19 +6,25 @@ const { BASEURL } = require("./config.js");
 const validator = require("email-validator");
 
 const tokenValidation = async (machineId, token) => {
-  return new Promise((resolve) => {
-    fetch(BASEURL + "/tokenvalidation", {
+  try {
+    const response = await fetch(BASEURL + "/tokenvalidation", {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // Pastikan header JSON ditambahkan
       },
       body: JSON.stringify({ machineId, token }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        resolve(data);
-      });
-  });
+    });
+
+    if (!response.ok) {
+      throw new error(`HTTP error status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    logger.error({ err }, "Error during fetching data from the server");
+    throw err;
+  }
 };
 
 const userRegistration = async () => {
