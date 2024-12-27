@@ -12,6 +12,7 @@ const {
   getChatLog,
   getTargetList,
   sleep,
+  getListSession,
 } = require("./utils/utils.js");
 
 const fs = require("fs");
@@ -47,6 +48,21 @@ async function menuAutoSender() {
 }
 
 async function menuAutoSenderAntiBanned() {
+  console.log();
+  console.log("[I] daftar sesi yang akan dipakai");
+  const listsession = getListSession();
+
+  if (listsession.length <= 0) {
+    console.log(
+      "[!] Anda belum memiliki akun yang terhubung, silahkan tambahkan akun dulu",
+    );
+    return false;
+  }
+
+  listsession.forEach((sesi, i) => {
+    console.log(`[${i + 1}] ${sesi}`);
+  });
+
   const clients = generateClientsObject();
   const targetlist = getTargetList();
 
@@ -56,6 +72,8 @@ async function menuAutoSenderAntiBanned() {
   // cetak info
   logger.info("Jumlah akun   : " + Object.keys(clients).length);
   logger.info("Jumlah target : " + targetlist.length);
+
+  await sleep(3000);
 
   const message = prompt("Masukan pesan yang ingin anda kirim: ");
 
@@ -69,9 +87,13 @@ async function menuAutoSenderAntiBanned() {
       currentTargetIndex + config.clientLimitMsg,
     );
 
+
     logger.info("Memulai mengirim pesan ke targetlist");
+    await sleep(1000);
+
     await sendMessage(client, message, targets);
 
+    currentTargetIndex += config.clientLimitMsg;
     currentClientIndex++;
   }
   process.exit(0);
