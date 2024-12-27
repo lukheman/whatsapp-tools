@@ -53,21 +53,38 @@ async function clientLogin(phone_number) {
 
     return client;
   } else {
-    const client = new Client({
-      authStrategy: new LocalAuth({ dataPath: "./session/" + phone_number }),
-    });
+    try {
+      const client = new Client({
+        authStrategy: new LocalAuth({ dataPath: "./session/" + phone_number }),
+      });
+      await client.initialize();
 
-    client.on("qr", async (qr) => {
-      logger.info("Generate qr code untuk nomor " + phone_number);
-      qrcode.generate(qr, { small: true });
-    });
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error("Client ready timeout after 5 minutes"));
+        }, 300000);
 
-    client.on("ready", () => {
-      logger.info("client siap digunakan untuk nomor " + phone_number);
+        client.once("qr", (qr) => {
+          logger.info("Generate qr code untuk nomor " + phone_number);
+          qrcode.generate(qr, { small: true });
+        });
+
+        client.once("ready", () => {
+          logger.info("client siap digunakan untuk nomor " + phone_number);
+          clearTimeout(timeout);
+          resolve();
+        });
+
+        client.once("auth_failure", (err) => {
+          clearTimeout(timeout);
+          reject(new Error(`Authentication failed: ${err}`));
+        });
+      });
       return client;
-    });
-
-    client.initialize();
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    }
   }
 }
 
@@ -111,9 +128,9 @@ async function getChatLog(client, phone_number, limit) {
     await client.initialize();
     logger.debug("menunggu client siap untuk digunakan");
 
-    await new Promise((resolve, rejects) => {
+    await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        rejects(new Error("Client ready timeout after 30 seconds"));
+        reject(new Error("Client ready timeout after 30 seconds"));
       }, 30000);
 
       client.once("ready", () => {
