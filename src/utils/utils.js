@@ -105,28 +105,50 @@ async function sendMessage(client, message, targets) {
 }
 
 async function getChatLog(client, phone_number, limit) {
-  logger.debug("Membuat client handler");
-  client.on("ready", async () => {
-    logger.info("client siap...");
+  logger.debug("Initializing client");
 
-    const chatId = phone_number + "@c.us";
+  try {
+    await client.initialize();
+    logger.debug("menunggu client siap untuk digunakan");
 
-    try {
-      const chat = await client.getChatById(chatId);
+    await new Promise((resolve, rejects) => {
+      const timeout = setTimeout(() => {
+        rejects(new Error("Client ready timeout after 30 seconds"));
+      }, 30000);
 
-      const messages = await chat.fetchMessages({ limit });
-
-      logger.info("10 chat pertama dari " + phone_number);
-      messages.forEach((msg, index) => {
-        logger.info(`${index + 1} : ${msg.body}`);
+      client.once("ready", () => {
+        clearTimeout(timeout);
+        resolve();
       });
-    } catch (err) {
-      logger.error(err, "Gagal mengambil pesan");
-    }
-  });
+    });
 
-  logger.debug("initialize client");
-  client.initialize();
+    logger.info("Client siap mendapatkan pesan");
+
+    const chatId = `${phone_number}@c.us`;
+
+    const chat = await client.getChatById(chatId);
+    const messages = await chat.fetchMessages({ limit });
+
+    logger.info(`Retrieved ${messages.length} messages from ${phone_number}`);
+
+    let index = 0;
+    for (const msg of messages) {
+      index++;
+      logger.info(`${index}: ${msg.body}`);
+    }
+    return messages;
+  } catch (err) {
+    logger.error({ err }, `Failed to fetch messages from ${phone_number}`);
+    throw err; // Re-throw to allow caller to handle error
+  } finally {
+    // Cleanup
+    try {
+      await client.destroy();
+      logger.debug("Client destroyed successfully");
+    } catch (destroyErr) {
+      logger.error({ destroyErr }, "Error destroying client");
+    }
+  }
 }
 
 // fungsi untuk mendapatkan list berdasarkn isi file targetlist.txt
