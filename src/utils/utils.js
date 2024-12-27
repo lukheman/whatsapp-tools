@@ -22,43 +22,53 @@ function generateClientsObject() {
 // jika Client tidak ada maka buat client baru
 // fungsi mengembaikan object Client
 async function clientLogin(phone_number) {
-  return new Promise((resolve) => {
-    if (phone_number == undefined) {
-      const filenames = fs.readdirSync("./session/");
+  if (phone_number == undefined) {
+    const sessions = fs.readdirSync("./session/");
 
-      filenames.forEach((file, i) => {
-        console.log(`${i + 1}. ${file}`);
-      });
-
-      let session = prompt("Pilih sesi: ");
-      let nomor = "";
-
-      nomor = filenames[session - 1];
-
-      logger.debug("Membuat object client untuk nomor ", nomor);
-      const client = new Client({
-        authStrategy: new LocalAuth({ dataPath: "./session/" + nomor }),
-      });
-
-      resolve(client);
-    } else {
-      const client = new Client({
-        authStrategy: new LocalAuth({ dataPath: "./session/" + phone_number }),
-      });
-
-      client.on("qr", async (qr) => {
-        logger.info("Generate qr code untuk nomor " + phone_number);
-        qrcode.generate(qr, { small: true });
-      });
-
-      client.on("ready", () => {
-        logger.info("client siap digunakan untuk nomor " + phone_number);
-        resolve(client);
-      });
-
-      client.initialize();
+    if (sessions.length <= 0) {
+      console.log(
+        "[!] Anda belum memiliki akun yang terhubung, silahkan tambahkan akun dulu",
+      );
+      return false;
     }
-  });
+
+    sessions.forEach((file, i) => {
+      console.log(`${i + 1}. ${file}`);
+    });
+
+    let session = prompt("Pilih sesi: ");
+    let nomor = "";
+
+    nomor = sessions[session - 1];
+
+    if (nomor == undefined) {
+      // TODO: tulis pesan kesalahan di sini
+      return false;
+    }
+
+    logger.debug("Membuat object client untuk nomor ", nomor);
+    const client = new Client({
+      authStrategy: new LocalAuth({ dataPath: "./session/" + nomor }),
+    });
+
+    return client;
+  } else {
+    const client = new Client({
+      authStrategy: new LocalAuth({ dataPath: "./session/" + phone_number }),
+    });
+
+    client.on("qr", async (qr) => {
+      logger.info("Generate qr code untuk nomor " + phone_number);
+      qrcode.generate(qr, { small: true });
+    });
+
+    client.on("ready", () => {
+      logger.info("client siap digunakan untuk nomor " + phone_number);
+      return client;
+    });
+
+    client.initialize();
+  }
 }
 
 async function sendMessage(client, message, targets) {
@@ -166,4 +176,5 @@ module.exports = {
   getTargetList,
   cekToken,
   sleep,
+  getListSession,
 };
