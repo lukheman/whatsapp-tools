@@ -5,15 +5,15 @@ const qrcode = require("qrcode-terminal");
 const logger = require("./../logger/logger.js");
 
 function generateClientsObject() {
-  const filenames = fs.readdirSync("./session/");
+  const sessions = fs.readdirSync("./session/");
 
   const clients = {};
 
-  filenames.forEach((sesi) => {
+  for (const sesi of sessions) {
     clients[sesi] = new Client({
       authStrategy: new LocalAuth({ dataPath: "./session/" + sesi }),
     });
-  });
+  }
 
   return clients;
 }
@@ -32,9 +32,9 @@ async function clientLogin(phone_number) {
       return false;
     }
 
-    sessions.forEach((file, i) => {
-      console.log(`${i + 1}. ${file}`);
-    });
+    for (const [i, sesi] of sessions.entries()) {
+      console.log(`${i + 1}. ${sesi}`);
+    }
 
     let session = prompt("Pilih sesi: ");
     let nomor = "";
