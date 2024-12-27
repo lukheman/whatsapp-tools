@@ -140,10 +140,8 @@ function getTargetList() {
 }
 
 function getTokenFromUser() {
-  return new Promise((resolve) => {
-    const token = prompt("[!] Masukan token: ");
-    resolve(token);
-  });
+  const token = prompt("[!] Masukan token: ");
+  return token;
 }
 
 // fungsi ini untuk mengecek file token
