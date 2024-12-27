@@ -31,7 +31,7 @@ const userRegistration = async () => {
   const name = prompt("[?] Nama: ");
   const email = prompt("[?] Email: ");
 
-  if (!validator.validate_async(email)) {
+  if (!validator.validate(email)) {
     logger.error("invalid email");
     return false;
   }
