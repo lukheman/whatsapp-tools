@@ -154,6 +154,10 @@ async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function getListSession() {
+  return fs.readdirSync("session");
+}
+
 module.exports = {
   clientLogin,
   generateClientsObject,
