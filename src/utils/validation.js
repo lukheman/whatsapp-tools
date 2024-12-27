@@ -59,11 +59,11 @@ const userRegistration = async () => {
     }
 
     logger.info("User successfully registered");
-    await sleep(1000);
-
-    console.log("[!] Token anda: \n");
-    console.log(data.data.token);
-    console.log("\n[!] Gunakan token tersebut untuk login di lain waktu");
+    //await sleep(1000);
+    //
+    //console.log("[!] Token anda: \n");
+    //console.log(data.data.token);
+    //console.log("\n[!] Gunakan token tersebut untuk login di lain waktu");
     return true;
   } catch (err) {
     logger.error({ err }, "Error during fetching data from the server");
