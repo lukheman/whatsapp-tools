@@ -64,22 +64,34 @@ async function clientLogin(phone_number) {
 async function sendMessage(client, message, targets) {
   logger.debug("initialize client");
 
-  return new Promise((resolve) => {
-    logger.debug("membuat handler untuk mengirim pesan");
-    client.on("ready", () => {
-      targets.forEach((target) => {
-        try {
-          client.sendMessage(target + "@c.us", message);
-          logger.info("Berhasil mengirim pesan ke: " + target);
-        } catch (err) {
-          logger.error(err, "Gagal mengirim pesan ke: " + target);
-        }
-      });
+  try {
+    // Initialize client first
+    await client.initialize();
+    logger.debug("Client initialized successfully");
 
-      resolve(true);
-    });
-    client.initialize();
-  });
+    // Process each target sequentially
+    for (const target of targets) {
+      try {
+        await sleep(2000);
+        await client.sendMessage(`${target}@c.us`, message);
+        logger.info(`Berhasil mengirim pesan ke: ${target}`);
+      } catch (err) {
+        logger.error({ err }, `Gagal mengirim pesan ke: ${target}`);
+        // Continue with next target even if current one fails
+      }
+    }
+  } catch (err) {
+    logger.error({ err }, "Error during client initialization");
+    throw err;
+  } finally {
+    // Ensure client is always destroyed properly
+    try {
+      await client.destroy();
+      logger.debug("Client destroyed successfully");
+    } catch (destroyErr) {
+      logger.error({ destroyErr }, "Error destroying client");
+    }
+  }
 }
 
 async function getChatLog(client, phone_number, limit) {
