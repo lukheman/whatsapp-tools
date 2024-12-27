@@ -38,27 +38,37 @@ const userRegistration = async () => {
 
   const machineId = machineIdSync({ origin: true });
 
-  await fetch(BASEURL + "/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, email, machineId }),
-  })
-    .then((response) => response.json())
-    .then(async (data) => {
-      if (data.status === "error") {
-        logger.error(data.message);
-        return false;
-      }
-
-      logger.info("User successfully registered");
-      await sleep(1000);
-      console.log("[!] Token anda: \n");
-      console.log(data.data.token);
-      console.log("\n[!] Gunakan token tersebut untuk login di lain waktu");
-      return true;
+  try {
+    const response = await fetch(BASEURL + "/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, machineId }),
     });
+
+    if (!response.ok) {
+      throw new error(`HTTP error status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.status === "error") {
+      logger.error(data.message);
+      throw new Error(data.message);
+    }
+
+    logger.info("User successfully registered");
+    await sleep(1000);
+
+    console.log("[!] Token anda: \n");
+    console.log(data.data.token);
+    console.log("\n[!] Gunakan token tersebut untuk login di lain waktu");
+    return true;
+  } catch (err) {
+    logger.error({ err }, "Error during fetching data from the server");
+    throw err;
+  }
 };
 
 module.exports = {
