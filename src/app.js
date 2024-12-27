@@ -87,7 +87,6 @@ async function menuAutoSenderAntiBanned() {
       currentTargetIndex + config.clientLimitMsg,
     );
 
-
     logger.info("Memulai mengirim pesan ke targetlist");
     await sleep(1000);
 
@@ -123,8 +122,12 @@ async function menuGetChatLog() {
   const phone_number = prompt("[*] Nomor Hp: ");
   const limit = prompt("[*] Limit: ");
 
-  logger.info("get chat log");
-  await getChatLog(client, phone_number, Number(limit));
+  try {
+    logger.info("get chat log");
+    await getChatLog(client, phone_number, Number(limit));
+  } catch (err) {
+    logger.error("Gagal mendapatkan log pesan: ", err);
+  }
 }
 
 async function registerAndValidation() {
