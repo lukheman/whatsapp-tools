@@ -24,13 +24,11 @@ const components = require("./ui/components.js");
 
 const { BASEURL } = require("./utils/config.js");
 
-function pilihMenu() {
+async function pilihMenu() {
   components.menu();
 
-  return new Promise((resolve) => {
-    let pilihan = prompt("[ ] Pilih menu: ");
-    resolve(pilihan);
-  });
+  let pilihan = prompt("[ ] Pilih menu: ");
+  resolve(pilihan);
 }
 
 async function menuAutoSender() {
