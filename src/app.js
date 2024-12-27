@@ -28,7 +28,7 @@ async function pilihMenu() {
   components.menu();
 
   let pilihan = prompt("[ ] Pilih menu: ");
-  resolve(pilihan);
+  return pilihan;
 }
 
 async function menuAutoSender() {
@@ -101,7 +101,7 @@ async function menuAddPhoneNumber() {
   while (true) {
     const phone_number = prompt("[ ] Masukan nomor telepon: ");
     logger.info("Mencoba login ke nomor " + phone_number);
-    await clientLogin(phone_number);
+    const result = await clientLogin(phone_number);
     logger.info("Berhasil login ke nomor " + phone_number);
 
     const repeat = prompt("[?] Lagi (y/n): ");
@@ -109,7 +109,6 @@ async function menuAddPhoneNumber() {
     if (repeat == "y") {
       continue;
     } else {
-      await menu();
       process.exit(0);
     }
   }
