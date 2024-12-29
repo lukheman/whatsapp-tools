@@ -9,7 +9,8 @@
     ]
   },
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +24,6 @@
     "prettier": "^3.4.2",
     "prompt-sync": "^4.2.0",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.23.0"
+    "whatsapp-web.js": "^1.26.0"
   }
 }
