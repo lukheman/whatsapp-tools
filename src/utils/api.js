@@ -27,10 +27,7 @@ const tokenValidation = async (machineId, token) => {
   }
 };
 
-const userRegistration = async () => {
-  const name = prompt("[?] Nama: ");
-  const email = prompt("[?] Email: ");
-
+const userSignup = async (name, email) => {
   if (!validator.validate(email)) {
     logger.error("invalid email");
     return false;
@@ -58,13 +55,35 @@ const userRegistration = async () => {
       throw new Error(data.message);
     }
 
-    logger.info("User successfully registered");
-    //await sleep(1000);
-    //
-    //console.log("[!] Token anda: \n");
-    //console.log(data.data.token);
-    //console.log("\n[!] Gunakan token tersebut untuk login di lain waktu");
     return true;
+  } catch (err) {
+    logger.error({ err }, "Error during fetching data from the server");
+    throw err;
+  }
+};
+
+const isRegistered = async () => {
+  const machineId = machineIdSync({ origin: true });
+  console.log(machineId);
+
+  try {
+    const response = await fetch(BASEURL + "/ismachineidregistered", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Pastikan header JSON ditambahkan
+      },
+      body: JSON.stringify({ machineId }),
+    });
+
+    logger.debug("Successfully getting data from server...");
+    await sleep(1000);
+    const data = await response.json();
+
+    if (data.status === "success") {
+      return true;
+    }
+
+    return false;
   } catch (err) {
     logger.error({ err }, "Error during fetching data from the server");
     throw err;
@@ -73,5 +92,6 @@ const userRegistration = async () => {
 
 module.exports = {
   tokenValidation,
-  userRegistration,
+  userSignup,
+  isRegistered,
 };
