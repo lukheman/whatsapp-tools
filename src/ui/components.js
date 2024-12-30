@@ -188,7 +188,11 @@ const getChatLog = async () => {
   const limit = prompt("[?] Berapa chat yang akan dilihat: ");
 
   await chatLogFrom(client, target, limit);
-  return true;
+
+  prompt("[!] (enter) untuk lanjut kembali ke menu");
+  await mainMenu();
+};
+
 const registration = async () => {
   const name = prompt("[?] Name: ");
   const email = prompt("[?] Email: ");
