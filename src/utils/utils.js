@@ -6,10 +6,11 @@ const { SESSIONDIR } = require("./config.js");
 const { exec } = require("child_process");
 const { error, log } = require("console");
 
-function getTokenFromUser() {
+const getTokenFromUser = () => {
   const token = prompt("[!] Masukan token: ");
   return token;
-}
+};
+
 const openUrl = async (url) => {
   let command;
 
