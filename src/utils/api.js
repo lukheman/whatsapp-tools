@@ -5,7 +5,8 @@ const prompt = require("prompt-sync")();
 const { BASEURL } = require("./config.js");
 const validator = require("email-validator");
 
-const tokenValidation = async (machineId, token) => {
+const tokenValidation = async (token) => {
+  const machineId = machineIdSync({ origin: true });
   try {
     const response = await fetch(BASEURL + "/tokenvalidation", {
       method: "POST",
@@ -20,7 +21,11 @@ const tokenValidation = async (machineId, token) => {
     }
 
     const data = await response.json();
-    return data;
+    if (data.status === "error") {
+      return false;
+    } else {
+      return true;
+    }
   } catch (err) {
     logger.error({ err }, "Error during fetching data from the server");
     throw err;
@@ -64,7 +69,7 @@ const userSignup = async (name, email) => {
 
 const isRegistered = async () => {
   const machineId = machineIdSync({ origin: true });
-  console.log(machineId);
+  // const machineId = "aka";
 
   try {
     const response = await fetch(BASEURL + "/ismachineidregistered", {
