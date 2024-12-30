@@ -65,9 +65,25 @@ const getListSession = () => {
   return fs.readdirSync(SESSIONDIR);
 };
 
+const saveStatus = (data) => {
+  var text = "";
+  for (const number of data.failed) {
+    text += `${number}\n`;
+  }
+  fs.writeFileSync("gagal.txt", text, "utf8");
+
+  var text = "";
+  for (const number of data.success) {
+    text += `${number}\n`;
+  }
+  fs.writeFileSync("berhasil.txt", text, "utf8");
+};
+
 module.exports = {
   getTargetList,
   cekToken,
   sleep,
   getListSession,
+  saveStatus,
+  openUrl,
 };
