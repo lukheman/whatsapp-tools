@@ -9,14 +9,14 @@ const validator = require("email-validator");
 const { userSignup } = require("../utils/api.js");
 const config = require("../config/config_user.json");
 
-function banner() {
+const banner = () => {
   console.log(`
 |  \\/  | ___ _ __ | |_ __ \\ \\      / /_ _
 | |\\/| |/ _ \\ '_ \\| __/ _\` \\ \\ /\\ / / _\` |
 | |  | |  __/ | | | || (_| |\\ V  V / (_| |
 |_|  |_|\\___|_| |_|\\__\\__,_| \\_/\\_/ \\__,_|
  `);
-}
+};
 
 const selectMenu = async () => {
   console.clear();
