@@ -189,6 +189,47 @@ const getChatLog = async () => {
 
   await chatLogFrom(client, target, limit);
   return true;
+const registration = async () => {
+  const name = prompt("[?] Name: ");
+  const email = prompt("[?] Email: ");
+
+  if (!validator.validate(email)) {
+    console.log("[!] Invalid email");
+    process.exit();
+  }
+
+  try {
+    await userSignup(name, email);
+
+    const message = `Halo,
+Saya ${name}, ingin meminta token akses untuk keperluan.
+
+Berikut detail saya:
+
+    Nama: ${name}
+    Email: ${email}
+
+Jika ada syarat tambahan yang perlu saya lengkapi, mohon kabari saya.
+
+Terima kasih banyak atas bantuannya!
+
+Salam`;
+
+    let url = `https://wa.me/6282250223147?text=${encodeURIComponent(message)}`;
+    await openUrl(url);
+  } catch (err) {
+    console.log("[!] Gagal melakukan registrasi, harap coba lagi");
+  }
+};
+
+const loginUsingToken = async () => {
+  const token = prompt("[!] Masukan token: ");
+  const isTokenValid = await tokenValidation(token);
+  if (isTokenValid) {
+    await mainMenu();
+  }
+  console.log("[!] invalid token");
+  console.log("[!] Hubungi admin (082250223147) untuk mendapatkan token");
 };
 
 module.exports = {
