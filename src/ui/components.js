@@ -1,12 +1,17 @@
 const fs = require("fs");
 const { SESSIONDIR } = require("../utils/config");
 const { getClientObject, accountSync } = require("../utils/auth");
-const { getTargetList, sleep, getListSession } = require("../utils/utils");
+const {
+  getTargetList,
+  sleep,
+  getListSession,
+  openUrl,
+} = require("../utils/utils");
 const { sendMessage, chatLogFrom } = require("../utils/messages.js");
 const prompt = require("prompt-sync")();
 const logger = require("../logger/logger.js");
 const validator = require("email-validator");
-const { userSignup } = require("../utils/api.js");
+const { userSignup, tokenValidation } = require("../utils/api.js");
 const config = require("../config/config_user.json");
 
 const banner = () => {
@@ -232,4 +237,5 @@ module.exports = {
   registration,
   getChatLog,
   mainMenu,
+  loginUsingToken,
 };
