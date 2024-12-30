@@ -26,6 +26,7 @@ const selectMenu = async () => {
   console.log("[2] Auto sender (save mode)");
   console.log("[3] Tambah Nomor");
   console.log("[4] Dapatkan Log Chat");
+  console.log("[e] exit");
   console.log();
 
   let pilihan = prompt("[ ] Pilih menu: ");
@@ -99,7 +100,8 @@ const autoSendMessage = async () => {
   await sleep(3000);
   await sendMessage(client, message, targetlist);
 
-  process.exit();
+  prompt("[!] (enter) untuk lanjut kembali ke menu");
+  await mainMenu();
 };
 
 const autoSendMessageSaveMode = async () => {
