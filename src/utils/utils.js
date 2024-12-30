@@ -3,11 +3,36 @@ const prompt = require("prompt-sync")();
 const qrcode = require("qrcode-terminal");
 const logger = require("./../logger/logger.js");
 const { SESSIONDIR } = require("./config.js");
+const { exec } = require("child_process");
+const { error, log } = require("console");
 
 function getTokenFromUser() {
   const token = prompt("[!] Masukan token: ");
   return token;
 }
+const openUrl = async (url) => {
+  let command;
+
+  switch (process.platform) {
+    case "darwin":
+      command = `open "${url}"`;
+      break;
+    case "win32":
+      command = `start "${url}"`;
+      break;
+    default:
+      command = `xdg-open "${url}"`;
+      break;
+  }
+
+  exec(command, (error) => {
+    if (error) {
+      logger.error({ error }, "Error: ");
+      return;
+    }
+    logger.info("Browser berhasil dibuka");
+  });
+};
 
 // fungsi ini untuk mengecek file token
 // jika ada maka gunakan token yang ada di file
