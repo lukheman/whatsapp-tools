@@ -11,6 +11,7 @@ const main = async () => {
     prompt("[!] Lakukan registrasi terlebih dahulu, sebelum menggunakan tools");
     await components.registration();
   } else {
+    console.log("[!] Anda telah dertaftar, silahkan login menggunakan cookie");
     await components.loginUsingToken();
   }
 };
