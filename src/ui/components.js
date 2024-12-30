@@ -147,23 +147,8 @@ const autoSendMessageSaveMode = async () => {
     currentTargetIndex += config.clientLimitMsg;
     currentClientIndex++;
   }
-};
-
-const registration = async () => {
-  const name = prompt("[?] Name: ");
-  while (true) {
-    const email = prompt("[?] Email: ");
-
-    if (validator.validate(email)) {
-      break;
-    }
-  }
-
-  try {
-    await userSignup(name, email);
-  } catch (err) {
-    console.log("[!] Gagal melakukan registrasi, harap coba lagi");
-  }
+  prompt("[!] (enter) untuk lanjut kembali ke menu");
+  await mainMenu();
 };
 
 const getChatLog = async () => {
