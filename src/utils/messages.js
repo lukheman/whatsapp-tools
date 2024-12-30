@@ -1,5 +1,5 @@
 const logger = require("../logger/logger.js");
-const { sleep } = require("./utils.js");
+const { sleep, saveStatus } = require("./utils.js");
 
 const sendMessage = async (client, message, targets) => {
   logger.debug("initialize client");
@@ -9,18 +9,28 @@ const sendMessage = async (client, message, targets) => {
     logger.debug("Client initialized successfully");
     await sleep(1000);
 
-    // Process each target sequentially
+    let status = {
+      failed: [],
+      success: [],
+    };
+
     for (const target of targets) {
       try {
         await client.sendMessage(`${target}@c.us`, message);
         logger.info(`Berhasil mengirim pesan ke: ${target}`);
         await sleep(2000);
+        status.success.push(target);
       } catch (err) {
         logger.error(`Gagal mengirim pesan ke: ${target}`);
+        status.failed.push(target);
         // throw err;
         // Continue with next target even if current one fails
       }
     }
+
+    saveStatus(status);
+
+    return status;
   } catch (err) {
     logger.error({ err }, "Error during client initialization");
     throw err;
