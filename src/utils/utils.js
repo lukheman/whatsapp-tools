@@ -72,6 +72,7 @@ const saveStatus = (data, filename) => {
     fs.mkdirSync("results/");
   }
 
+  var text = "";
   for (const number of data.failed) {
     text += `${number}\n`;
   }
