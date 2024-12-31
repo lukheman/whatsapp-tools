@@ -70,12 +70,14 @@ const chatLogFrom = async (client, phone_number, limit) => {
     const chat = await client.getChatById(chatId);
     const messages = await chat.fetchMessages({ limit });
 
-    logger.info(`Retrieved ${messages.length} messages from ${phone_number}`);
+    console.log(
+      `[*] Retrieved ${messages.length} messages from ${phone_number}`,
+    );
 
     let index = 0;
     for (const msg of messages) {
       index++;
-      logger.info(`${index}: ${msg.body}`);
+      console.log(`[*] ${index}: ${msg.body}`);
     }
     return messages;
   } catch (err) {
