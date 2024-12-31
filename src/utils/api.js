@@ -69,7 +69,6 @@ const userSignup = async (name, email) => {
 
 const isRegistered = async () => {
   const machineId = machineIdSync({ origin: true });
-  // const machineId = "aka";
 
   try {
     const response = await fetch(BASEURL + "/ismachineidregistered", {

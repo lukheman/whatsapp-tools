@@ -6,6 +6,7 @@ const {
   sleep,
   getListSession,
   openUrl,
+  saveStatus,
 } = require("../utils/utils");
 const { sendMessage, chatLogFrom } = require("../utils/messages.js");
 const prompt = require("prompt-sync")();
@@ -103,7 +104,9 @@ const autoSendMessage = async () => {
 
   logger.info("Memulai mengirim pesan ke targetlist");
   await sleep(3000);
-  await sendMessage(client, message, targetlist);
+  const status = await sendMessage(client, message, targetlist);
+
+  saveStatus(status, phone_number);
 
   prompt("[!] (enter) untuk lanjut kembali ke menu");
   await mainMenu();
@@ -125,6 +128,8 @@ const autoSendMessageSaveMode = async () => {
   const clients = getClientObject();
   const targetlist = getTargetList();
 
+  const limitMsg = prompt("[?] Batas pesan per akun (limit): ");
+
   let currentTargetIndex = 0;
   let currentClientIndex = 0;
 
@@ -137,21 +142,21 @@ const autoSendMessageSaveMode = async () => {
   const message = prompt("[?] Masukan pesan yang ingin anda kirim: ");
 
   while (currentClientIndex < Object.keys(clients).length) {
-    logger.info(
-      "Anda login dengan nomor " + Object.keys(clients)[currentClientIndex],
-    );
+    const currentNumberPhone = Object.keys(clients)[currentClientIndex];
+    logger.info("Anda login dengan nomor " + currentNumberPhone);
     const client = Object.values(clients)[currentClientIndex];
     const targets = targetlist.slice(
       currentTargetIndex,
-      currentTargetIndex + config.clientLimitMsg,
+      currentTargetIndex + Number(limitMsg),
     );
 
     logger.info("Memulai mengirim pesan ke targetlist");
     await sleep(1000);
 
-    await sendMessage(client, message, targets);
+    const status = await sendMessage(client, message, targets);
+    saveStatus(status, `${currentNumberPhone}savemode`);
 
-    currentTargetIndex += config.clientLimitMsg;
+    currentTargetIndex += Number(limitMsg);
     currentClientIndex++;
   }
   prompt("[!] (enter) untuk lanjut kembali ke menu");
