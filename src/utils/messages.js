@@ -1,5 +1,5 @@
 const logger = require("../logger/logger.js");
-const { sleep, saveStatus } = require("./utils.js");
+const { sleep } = require("./utils.js");
 
 const sendMessage = async (client, message, targets) => {
   logger.debug("initialize client");
@@ -9,28 +9,34 @@ const sendMessage = async (client, message, targets) => {
     logger.debug("Client initialized successfully");
     await sleep(1000);
 
-    let status = {
-      failed: [],
-      success: [],
-    };
+    const result = await new Promise((resolve, reject) => {
+      let status = {
+        failed: [],
+        success: [],
+      };
+      client.on("ready", async () => {
+        try {
+          for (const target of targets) {
+            try {
+              await client.sendMessage(`${target}@c.us`, message);
+              logger.info(`Berhasil mengirim pesan ke: ${target}`);
+              await sleep(2000);
+              status.success.push(target);
+            } catch (err) {
+              logger.error({ err });
+              logger.info(`Gagal mengirim pesan ke: ${target}`);
+              status.failed.push(target);
+            }
+          }
+          resolve(status);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
 
-    for (const target of targets) {
-      try {
-        await client.sendMessage(`${target}@c.us`, message);
-        logger.info(`Berhasil mengirim pesan ke: ${target}`);
-        await sleep(2000);
-        status.success.push(target);
-      } catch (err) {
-        logger.error(`Gagal mengirim pesan ke: ${target}`);
-        status.failed.push(target);
-        // throw err;
-        // Continue with next target even if current one fails
-      }
-    }
-
-    saveStatus(status);
-
-    return status;
+    console.log(result);
+    return result;
   } catch (err) {
     logger.error({ err }, "Error during client initialization");
     throw err;
@@ -54,8 +60,8 @@ const chatLogFrom = async (client, phone_number, limit) => {
 
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error("Client ready timeout after 30 seconds"));
-      }, 300000);
+        reject(new Error("Client ready timeout after 3 minutes"));
+      }, 180000);
 
       client.once("ready", () => {
         clearTimeout(timeout);
