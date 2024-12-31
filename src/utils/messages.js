@@ -55,7 +55,7 @@ const chatLogFrom = async (client, phone_number, limit) => {
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error("Client ready timeout after 30 seconds"));
-      }, 30000);
+      }, 300000);
 
       client.once("ready", () => {
         clearTimeout(timeout);
