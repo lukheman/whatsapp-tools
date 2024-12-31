@@ -66,18 +66,23 @@ const getListSession = () => {
   return fs.readdirSync(SESSIONDIR);
 };
 
-const saveStatus = (data) => {
-  var text = "";
+const saveStatus = (data, filename) => {
+  // cek directory result if (1fs.existsSync("results/")) { }
+  if (!fs.existsSync("results/")) {
+    fs.mkdirSync("results/");
+  }
+
   for (const number of data.failed) {
     text += `${number}\n`;
   }
-  fs.writeFileSync("gagal.txt", text, "utf8");
+
+  fs.writeFileSync(`results/${filename}_gagal.txt`, text, "utf8");
 
   var text = "";
   for (const number of data.success) {
     text += `${number}\n`;
   }
-  fs.writeFileSync("berhasil.txt", text, "utf8");
+  fs.writeFileSync(`results/${filename}_berhasil.txt`, text, "utf8");
 };
 
 module.exports = {
