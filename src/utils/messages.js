@@ -35,7 +35,6 @@ const sendMessage = async (client, message, targets) => {
       });
     });
 
-    console.log(result);
     return result;
   } catch (err) {
     logger.error({ err }, "Error during client initialization");
