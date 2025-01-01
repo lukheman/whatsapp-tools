@@ -1,10 +1,10 @@
-- [ ] jangan kembalikan machineid di api
 - [x] validasi pattern email
 - [ ] cek apakah sesi masih aktif
-- [ ] tambahkan validator pattern email di mentawa-server
-- [ ] tambahkan penanganan ketika nomor sudah tidak bisa mengirim pesan
+- [x] tambahkan penanganan ketika nomor sudah tidak bisa mengirim pesan
 - [ ] stabilisasikan di windows
 - [ ] running di terminal termux ( optional )
-- [ ] jika ada pesan gagal terkirim nomor tersebut bakalan di catat ke .txt untuk di gunakan kembali
-- [ ] tombol menu kembali
-- [ ] jika eror jangan langsung end sesion
+- [x] jika ada pesan gagal terkirim nomor tersebut bakalan di catat ke .txt untuk di gunakan kembali
+- [x] tombol menu kembali
+- [x] jika eror jangan langsung end sesion
+- [ ] perbaiki save result
+- [ ] cek koneksi internet 
