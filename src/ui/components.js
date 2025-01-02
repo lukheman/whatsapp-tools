@@ -192,11 +192,12 @@ const getChatLog = async () => {
 
 const registration = async () => {
   const name = prompt("[?] Name: ");
-  const email = prompt("[?] Email: ");
+  let email = "";
 
-  if (!validator.validate(email)) {
-    console.log("[!] Invalid email");
-    process.exit();
+  while (!validator.validate(email)) {
+    email = prompt("[?] Email: ");
+    // console.log("[!] Invalid email");
+    // process.exit();
   }
 
   try {
