@@ -50,7 +50,11 @@ const cekToken = () => {
 };
 
 const getTargetList = () => {
+  // TODO: handing when nothing target
   logger.info("Mendapatkan daftar target dari targetlist.txt");
+  if (!fs.existsSync("./targetlist.txt")) {
+    fs.writeFileSync("./targetlist.txt", "");
+  }
   const buffer = fs.readFileSync("./targetlist.txt", "utf8");
 
   const data = buffer.split("\n").filter((nomor) => nomor != "");
