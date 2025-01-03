@@ -4,7 +4,6 @@ function onMessageCreate(client) {
   logger.info("Membuat penanganan ketika client menerima pesan dari kontak");
 
   client.on("message", (message) => {
-    // logger.info(message);
     if (message.from.includes("@c.us")) {
       logger.info(`${message.from}: ${message.body}`);
     }

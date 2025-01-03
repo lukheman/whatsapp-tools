@@ -28,7 +28,7 @@ const openUrl = async (url) => {
 
   exec(command, (error) => {
     if (error) {
-      logger.error({ error }, "Error: ");
+      logger.debug({ error }, "Error: ");
       return;
     }
     logger.info("Browser berhasil dibuka");

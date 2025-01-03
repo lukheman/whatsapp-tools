@@ -23,8 +23,7 @@ const sendMessage = async (client, message, targets) => {
               await sleep(2000);
               status.success.push(target);
             } catch (err) {
-              logger.error({ err });
-              logger.info(`Gagal mengirim pesan ke: ${target}`);
+              logger.info({ err }, `Gagal mengirim pesan ke: ${target}`);
               status.failed.push(target);
             }
           }
@@ -37,15 +36,15 @@ const sendMessage = async (client, message, targets) => {
 
     return result;
   } catch (err) {
-    logger.error({ err }, "Error during client initialization");
+    logger.debug({ err }, "Error during client initialization");
     throw err;
   } finally {
     // Ensure client is always destroyed properly
     try {
       await client.destroy();
       logger.debug("Client destroyed successfully");
-    } catch (destroyErr) {
-      logger.error({ destroyErr }, "Error destroying client");
+    } catch (error) {
+      logger.debug({ error }, "Error destroying client");
     }
   }
 };
@@ -86,7 +85,7 @@ const chatLogFrom = async (client, phone_number, limit) => {
     }
     return messages;
   } catch (err) {
-    logger.error(`Failed to fetch messages from ${phone_number}`);
+    logger.debug(`Failed to fetch messages from ${phone_number}`);
     throw err; // Re-throw to allow caller to handle error
   } finally {
     // Cleanup
@@ -94,7 +93,7 @@ const chatLogFrom = async (client, phone_number, limit) => {
       await client.destroy();
       logger.debug("Client destroyed successfully");
     } catch (destroyErr) {
-      logger.error("Error destroying client");
+      logger.debug("Error destroying client");
     }
   }
 };

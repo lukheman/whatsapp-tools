@@ -57,7 +57,7 @@ const accountSync = async (phone_number) => {
     });
     return true;
   } catch (error) {
-    logger.error(error);
+    logger.debug({ err }, "Gagal melakukan sinkronisasi");
     fs.unlinkSync(`${SESSIONDIR}/${phone_number}`);
     throw error;
   } finally {
@@ -65,7 +65,7 @@ const accountSync = async (phone_number) => {
       client.destroy();
       logger.debug("Client destroyed successfully");
     } catch (error) {
-      logger.error({ error }, "Error destroying client");
+      logger.debug({ error }, "Error destroying client");
     }
   }
 };

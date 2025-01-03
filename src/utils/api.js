@@ -27,14 +27,14 @@ const tokenValidation = async (token) => {
       return true;
     }
   } catch (err) {
-    logger.error({ err }, "Error during fetching data from the server");
+    logger.debug({ err }, "Error during fetching data from the server");
     throw err;
   }
 };
 
 const userSignup = async (name, email) => {
   if (!validator.validate(email)) {
-    logger.error("invalid email");
+    logger.debug("invalid email");
     return false;
   }
 
@@ -56,13 +56,13 @@ const userSignup = async (name, email) => {
     const data = await response.json();
 
     if (data.status === "error") {
-      logger.error(data.message);
+      logger.debug(data.message);
       throw new Error(data.message);
     }
 
     return true;
   } catch (err) {
-    logger.error({ err }, "Error during fetching data from the server");
+    logger.debug({ err }, "Error during fetching data from the server");
     throw err;
   }
 };
@@ -89,7 +89,7 @@ const isRegistered = async () => {
 
     return false;
   } catch (err) {
-    logger.error({ err }, "Error during fetching data from the server");
+    logger.debug({ err }, " Error during fetching data from the server");
     throw err;
   }
 };
