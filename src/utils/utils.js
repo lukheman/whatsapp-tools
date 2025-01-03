@@ -90,6 +90,9 @@ const saveStatus = (data, filename) => {
   fs.writeFileSync(`results/${filename}_berhasil.txt`, text, "utf8");
 };
 
+const saveToken = (token) => {
+  fs.writeFileSync(".token", token);
+};
 module.exports = {
   getTargetList,
   cekToken,
@@ -97,4 +100,5 @@ module.exports = {
   getListSession,
   saveStatus,
   openUrl,
+  saveToken,
 };
