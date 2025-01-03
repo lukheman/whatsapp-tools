@@ -7,6 +7,7 @@ const {
   getListSession,
   openUrl,
   saveStatus,
+  saveToken,
 } = require("../utils/utils");
 const { sendMessage, chatLogFrom } = require("../utils/messages.js");
 const prompt = require("prompt-sync")();
@@ -40,26 +41,41 @@ const selectMenu = async () => {
 };
 
 const mainMenu = async () => {
-  const menu = await selectMenu();
+  while (true) {
+    const menu = await selectMenu();
 
-  if (menu == "1") {
-    await autoSendMessage();
-  } else if (menu == "2") {
-    await autoSendMessageSaveMode();
-  } else if (menu == "3") {
-    await addAccount();
-  } else if (menu == "4") {
-    await getChatLog();
-  } else if (menu == "e") {
-    process.exit();
-  } else {
-    console.log("[!] pilihan tidak tersedia");
+    if (menu == "1") {
+      await autoSendMessage();
+    } else if (menu == "2") {
+      await autoSendMessageSaveMode();
+    } else if (menu == "3") {
+      await addAccount();
+    } else if (menu == "4") {
+      await getChatLog();
+    } else if (menu == "e") {
+      process.exit();
+    } else {
+      console.log("[!] pilihan tidak tersedia");
+    }
   }
 };
 
 const addAccount = async () => {
   while (true) {
-    const phone_number = prompt("[?] Nomor telepon: ");
+    const phone_number = prompt("[?] Nomor telepon [menu - untuk kembali]: ");
+    if (phone_number === "") {
+      continue;
+    }
+
+    if (phone_number === "menu") {
+      await mainMenu();
+    }
+
+    if (isNaN(phone_number)) {
+      console.log("[!] Nomor telepon tidak valid");
+      continue;
+    }
+
     logger.info("Mencoba login ke nomor " + phone_number);
     try {
       await accountSync(phone_number);
@@ -87,7 +103,7 @@ const autoSendMessage = async () => {
   if (sessions.length <= 0) {
     console.log("[!] Anda belum mempunyai akun yang terhubung");
     prompt();
-    await mainMenu();
+    return;
   }
   let i = 1;
   for (const sesi of sessions) {
@@ -118,7 +134,8 @@ const autoSendMessageSaveMode = async () => {
     console.log(
       "[!] Anda belum memiliki akun yang terhubung, silahkan tambahkan akun dulu",
     );
-    return false;
+    prompt();
+    return;
   }
 
   sessions.forEach((sesi, i) => {
@@ -225,13 +242,22 @@ Salam`;
 };
 
 const loginUsingToken = async () => {
-  const token = prompt("[!] Masukan token: ");
+  let token = "";
+
+  if (fs.existsSync(".token")) {
+    token = fs.readFileSync(".token", "utf8");
+  } else {
+    token = prompt("[!] Masukan token: ");
+  }
+
   const isTokenValid = await tokenValidation(token);
   if (isTokenValid) {
+    saveToken(token);
     await mainMenu();
+  } else {
+    console.log("[!] invalid token");
+    console.log("[!] Hubungi admin (082250223147) untuk mendapatkan token");
   }
-  console.log("[!] invalid token");
-  console.log("[!] Hubungi admin (082250223147) untuk mendapatkan token");
 };
 
 module.exports = {
