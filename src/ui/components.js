@@ -14,7 +14,6 @@ const prompt = require("prompt-sync")();
 const logger = require("../logger/logger.js");
 const validator = require("email-validator");
 const { userSignup, tokenValidation } = require("../utils/api.js");
-const config = require("../config/config_user.json");
 
 const banner = () => {
   console.log(`
